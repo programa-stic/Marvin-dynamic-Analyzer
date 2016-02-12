@@ -6,7 +6,7 @@ Version: 0.01
 
 ## Arquitectura general ##
 
-![architecture.jpg](https://github.com/programa-stic/marvin-dynamic-analyzer/images/architecture.jpg)
+![architecture.jpg](https://raw.githubusercontent.com/programa-stic/Marvin-dynamic-Analyzer/master/images/architecture.jpg)
 
 Las vulnerabilidades analizadas dinámicamente son:
 
@@ -28,7 +28,7 @@ Además, intenta analizar por otro tipo de vulnerabilidades mientras analizando 
 
 El VMManager esta encargado de buscar nuevas vulnerabilidades en la base de datos de Marvin para analizar dinámicamente.
 
-Los VMClient reciben las aplicaciones y los tipos de vulnerabilidades a analizar del VMManager. Luego, usa ADB para conectarse al emulador y comenzar el análisis. Además configura al emulador para que él pueda actuar de router para interceptar los pedidos HTTP/HTTPS. Utilizan un fuzzer personalizado [MarvinToqueton](https://github.com/programastic/marvin-toqueton/) cuyo objetivo es interactuar con la aplicación para disparar las vulnerabilidades. 
+Los VMClient reciben las aplicaciones y los tipos de vulnerabilidades a analizar del VMManager. Luego, usa ADB para conectarse al emulador y comenzar el análisis. Además configura al emulador para que él pueda actuar de router para interceptar los pedidos HTTP/HTTPS. Utilizan un fuzzer personalizado [MarvinToqueton](https://github.com/programastic/Marvin-toqueton/) cuyo objetivo es interactuar con la aplicación para disparar las vulnerabilidades. 
 
 Los emuladores corren Android 4.3 x86 para soportar Cydia Substrate. Las próximas versiones soportaran Xposed.
 El proyecto está utilizando las imágenes de [Android-x86](www.android-x86.org).
