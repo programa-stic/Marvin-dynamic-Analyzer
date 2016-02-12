@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<map>
+    <string name="config_default_access">grant</string>
+    <string name="config_default_logage">3</string>
+    <string name="locale"></string>
+    <string name="theme">light</string>
+    <string name="config_default_log">access</string>
+    <string name="config_default_logformat">31122359</string>
+    <boolean name="config_default_notify" value="true" />
+    <boolean name="config_default_enablemultiuser" value="false" />
+    <boolean name="dev_permisison_warning" value="false" />
+    <boolean name="reauthenticate" value="true" />
+    <string name="config_default_wait">10</string>
+    <boolean name="freeload" value="false" />
+    <boolean name="survival" value="false" />
+    <int name="shown_follow" value="1" />
+    <boolean name="config_default_trustsystem" value="false" />
+    <boolean name="refresh" value="true" />
+    <boolean name="superuser" value="true" />
+</map>
