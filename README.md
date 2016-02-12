@@ -213,6 +213,10 @@ Lastly, create a snapshot of the VM running with any name you refer.
 * Deployed Marvin-frontend 
 * Python 2.7.x (DO NOT USE Python 3.X) 
 
+### Credits ###
+* Joaquín Rinaudo ([@xeroxnir](www.twitter.com/xeroxnir))
+* Juan Heguiabehere ([@jheguia](www.twitter.com/jheguia))
+
 ### Who do I talk to? ###
-* Joaquín Rinaudo jrinaudo@fundacionsadosky.org.ar
-* Juan Heguiabehere jheguia@fundacionsadosky.org.ar
+* Send an email to stic at fundacionsadosky.org.ar
+
