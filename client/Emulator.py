@@ -52,7 +52,7 @@ class Emulator(object):
 
     def set_localhost_as_gateway(self):
         local_address = netifaces.ifaddresses('eth0')[netifaces.AF_INET][0]['addr']
-        return self.run_adb_command('shell \"busybox route delete default; route add default gw {0} dev eth0\"'.format(local_address))
+        return self.run_adb_command('shell \"busybox route add -host {0} dev eth0; busybox route delete default; route add default gw {0} dev eth0\"'.format(local_address))
 
     def disconnect(self):
         return Utils.run_blocking_cmd("adb disconnect")
