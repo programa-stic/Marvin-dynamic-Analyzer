@@ -29,23 +29,28 @@ import shlex
 import traceback
 import json
 import settings
+import logging
 
 def isTestingMode():
     return settings.DEBUG_MODE
 
 
 def notify(address, path, params):
+    logging.debug("Notifying "+address+'/'+path)
     data = json.dumps(params)
     url = '''http://''' + address + '/' + path
     try:
+        logging.debug("Trigger: notify "+url +", data: "+data)
         request = urllib2.Request(url, data=data, headers={'Content-Type': 'application/json'})
         return urllib2.urlopen(request).read()
     except:
         print traceback.format_exc()
+        logging.error(traceback.format_exc())
         pass
 
 
 def run_non_blocking_cmd(command):
+    logging.debug("Running non-blocking command: "+command)
     return subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
@@ -64,13 +69,16 @@ def log_process(p):
 
 
 def run_blocking_cmd(command):
+    logging.debug("Running blocking command: "+command)
     return subprocess.Popen(shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 
 
 def get_subclasses(c):
     subclasses = c.__subclasses__()
+    #logging.debug("Subclassing " + repr(c)+". First list: " + repr(subclasses))
     for d in list(subclasses):
         subclasses.extend(get_subclasses(d))
+    #logging.debug ("Subclassing "+repr(c)+" : Final list: " + repr(subclasses))
     return subclasses
 
 

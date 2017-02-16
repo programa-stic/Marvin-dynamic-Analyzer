@@ -38,6 +38,7 @@ from Analyzer import Analyzer
 from Emulator import Emulator
 import Queue
 import threading
+import logging
 
 
 class VMClient(object):
@@ -51,6 +52,7 @@ class VMClient(object):
         return cls.vm_client
 
     def __init__(self):
+        logging.basicConfig(filename="/tmp/VMClient.log", level=logging.DEBUG)
         self.get_apk_from_manager()
         self.trigger = Trigger.get_trigger_for(self.get_filter_tag(), self.get_package_name(), self.get_description())
         self.reporter = Reporter.get_reporter_for(self.get_filter_tag(), self.get_package_name(),
@@ -61,6 +63,11 @@ class VMClient(object):
             self.get_description())
         self.error_queue = multiprocessing.Queue()
         self.setup_device()
+        logging.debug("Init successful")
+        logging.debug("Trigger: " + repr(self.trigger))
+        logging.debug("Reporter: " + repr(self.reporter))
+        logging.debug("Analyzer: " + repr(self.analyzer))
+        logging.debug("Emulator: " + repr(self.emulator))
 
     def get_emulator(self):
         return self.emulator
@@ -80,6 +87,9 @@ class VMClient(object):
             self.filter_id = sys.argv[1]
             self.package_name = sys.argv[2]
             self.description = json.loads(sys.argv[3])
+            logging.debug("VULNERABILITY: " + self.filter_id)
+            logging.debug("PACKAGE: " + self.package_name)
+            logging.debug("DESCRIPTION: " + json.dumps(self.description))
         else:
             url = '''http://''' + Utils.get_VM_Manager() + '/apk'
             # Open the url
@@ -109,6 +119,7 @@ class VMClient(object):
     def send_FAIL_signal(self,description):
         headers = {'status': 'ERROR', 'emulator': self.get_emulator().get_remote_ip(),
                    'description': description}
+        logging.error(description)
         Utils.notify(Utils.get_VM_Manager(), 'error', headers)
 
     def setup_device(self):
@@ -117,8 +128,10 @@ class VMClient(object):
         (output, err) = emulator.run_adb_command('install -r %s' % (self.package_name + ".apk"))
         self.add_error_message(output)
         self.add_error_message(err)
+        logging.debug(err)
         #set client as gateway so analyzer intercepts traffic
-        self.emulator.set_localhost_as_gateway()
+        message = self.emulator.set_localhost_as_gateway()
+        logging.debug("Setting localhost as gateway: "+ str(message))
 
 
     def start_trigger_process(self):
@@ -146,9 +159,11 @@ class VMClient(object):
     def time_out(self):
         print "A time out has occurred, the analysis failed"
         self.add_error_message("THE TEST TIMED OUT")
+        logging.error("Test timed out")
         self.send_errors()
 
     def add_error_message(self, message):
+        logging.error(message)
         self.error_queue.put(message)
 
     def send_errors(self):
@@ -173,7 +188,7 @@ class VMClient(object):
     def start_components(self):
         try:
             self.start_timeout_error_handler()
-            if self.get_description()['count'] > self.get_max_tries():
+            if (Utils.isTestingMode() == False) and self.get_description()['count'] > self.get_max_tries():
                 self.send_FAIL_signal({'tries': 'Couldn\'t verify the vulnerability dinamically'})
             else:
                 analyzer = self.start_analyzer_process()
@@ -182,12 +197,15 @@ class VMClient(object):
                 trigger = self.start_trigger_process()
                 # wait trigger process to finish
                 self.wait_for_component(trigger)
+                logging.debug("already closed trigger")
                 print "already closed trigger"
                 # signal end of trigger
                 self.wait_for_component(analyzer)
                 print "already closed analyzer"
+                logging.debug("already closed analyzer")
                 self.wait_for_component(reporter)
                 print "already closed reporter"
+                logging.debug("already closed reporter")                
             self.finish_timeout_error_handler()
         except:
             self.error_queue.put(traceback.format_exc())

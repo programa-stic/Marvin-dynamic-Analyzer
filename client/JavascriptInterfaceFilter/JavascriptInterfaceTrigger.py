@@ -26,6 +26,7 @@
 import Utils
 import time
 from CommonComponent.FuzzingTrigger import FuzzingTrigger
+import logging
 
 THROTTLE = 1000
 EVENTS_PER_TEST = 500
@@ -45,6 +46,7 @@ class JavascriptTrigger(FuzzingTrigger):
         self.set_throttle(4000)
         #halve the events so it doesn't take that much
         self.set_events_per_test(50)
+        logging.debug("Lanzando FuzzingTrigger")
         FuzzingTrigger.trigger(self)
 
 

@@ -27,6 +27,7 @@ import abc
 import time
 import Utils
 import netifaces
+import logging
 
 class Emulator(object):
     acting_component = None
@@ -35,10 +36,10 @@ class Emulator(object):
         self.remote_ip = description['emulator'] + ':5556'
         Utils.run_blocking_cmd("adb connect {0}:5556".format(self.remote_ip))
         Utils.run_blocking_cmd("adb root")
-        print "waiting to connect to adb as root"
+        logging.debug("waiting to connect to adb as root")
         time.sleep(5)
         Utils.run_blocking_cmd("adb connect {0}:5556".format(self.remote_ip))
-        print "connected to adb as root"
+        logging.debug("connected to adb as root")
 
     @staticmethod
     def get_emulator_for(filter_id, package_name, description):

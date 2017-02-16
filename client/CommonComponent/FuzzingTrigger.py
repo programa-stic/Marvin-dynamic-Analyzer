@@ -26,6 +26,7 @@
 import subprocess
 import random
 from Trigger import Trigger
+import logging
 
 THROTTLE = 1000
 EVENTS_PER_TEST = 100
@@ -46,6 +47,8 @@ class FuzzingTrigger(Trigger):
     def trigger(self):
         print "Running FuzzingTrigger"
         seed = int(random.SystemRandom().getrandbits(32))
+        logging.debug ("Lanzando shell monkey -p %s -v --throttle %d -s %d %d" % (
+            self.get_package_name(), self.throttle, seed, self.event_per_test))
         self.get_emulator().run_adb_command('shell monkey -p %s -v --throttle %d -s %d %d' % (
             self.get_package_name(), self.throttle, seed, self.event_per_test))
         # add events to notify to server

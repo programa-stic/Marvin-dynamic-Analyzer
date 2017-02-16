@@ -37,6 +37,7 @@ from Emulator import Emulator
 from libmproxy import controller, proxy
 from libmproxy.proxy.server import ProxyServer
 from libmproxy.flow import FlowWriter
+import logging
 
 class Analyzer(controller.Master):
     acting_component = None
@@ -53,6 +54,7 @@ class Analyzer(controller.Master):
         self.network_flow = FlowWriter(flow_dump_file)
         self.should_exit = None
         self.extra_analyzers = [InsecureTransmissionAnalyzer(self),ZIPPathTraversalAnalyzer(self)]
+        logging.debug("Init analyzer")
 
     def get_extra_analyzers(self):
         return self.extra_analyzers
@@ -82,6 +84,7 @@ class Analyzer(controller.Master):
     @staticmethod
     def get_analyzer():
         if not Analyzer.acting_component:
+            logging.error("Analyzer: analyzer not initialized")
             raise Exception("Analyzer not initialized")
         return Analyzer.acting_component
 
@@ -90,7 +93,9 @@ class Analyzer(controller.Master):
     def get_analyzer_for(filter_id, package_name, description):
         if not Analyzer.acting_component:
             analyzer_class = Dispatcher.get_component_for(filter_id, Analyzer)
+            logging.debug("Analyzer class: "+ repr(analyzer_class))
             Analyzer.acting_component =  analyzer_class(filter_id, package_name, description)
+            logging.debug("Analyzer acting component: "+ repr(Analyzer.acting_component))
         return Analyzer.acting_component
 
     @staticmethod
@@ -110,6 +115,7 @@ class Analyzer(controller.Master):
         flow.reply()
 
     def handle_response(self, flow):
+        logging.debug("Analyzer: analyzing "+ str(flow))
         for analyzer in self.get_extra_analyzers():
             analyzer.handle_response(flow)
         self.network_flow.add(flow)
