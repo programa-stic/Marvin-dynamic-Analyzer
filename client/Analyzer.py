@@ -117,7 +117,10 @@ class Analyzer(controller.Master):
     def handle_response(self, flow):
         logging.debug("Analyzer: analyzing "+ str(flow))
         for analyzer in self.get_extra_analyzers():
-            analyzer.handle_response(flow)
+            try:
+                analyzer.handle_response(flow)
+            except Exception:
+                print traceback.format_exc()
         self.network_flow.add(flow)
         flow.reply()
 

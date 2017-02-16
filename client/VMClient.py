@@ -183,12 +183,12 @@ class VMClient(object):
         self.timer.cancel()
 
     def get_max_tries(self):
-        return 5
+        return 1000
 
     def start_components(self):
         try:
             self.start_timeout_error_handler()
-            if (Utils.isTestingMode() == False) and self.get_description()['count'] > self.get_max_tries():
+            if (Utils.isTestingMode() == False) and int(self.get_description()['count']) > self.get_max_tries():
                 self.send_FAIL_signal({'tries': 'Couldn\'t verify the vulnerability dinamically'})
             else:
                 analyzer = self.start_analyzer_process()
